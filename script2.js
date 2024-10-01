@@ -1,3 +1,4 @@
+//link to localhost
 const PORT = 3000;
 const defaultBaseUrl = `http://localhost:${PORT}/campgrounds/`;
 
@@ -13,7 +14,7 @@ const getAllCampgrounds = async (baseURL) => {
         console.error('Error fetching campgrounds:', error);
     }
 };
-
+// show database
 function showCampgrounds(data) {
     let tbody = document.getElementById('tbody');
     tbody.innerHTML = ''; // Clear existing rows
@@ -27,7 +28,7 @@ function showCampgrounds(data) {
         td1.textContent = item.campground;
         td2.textContent = item.location;
 
-        // Create delete button
+        
         let deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.classList.add('btn', 'btn-danger');
@@ -40,7 +41,7 @@ function showCampgrounds(data) {
         tbody.appendChild(tr);
     }
 }
-
+// Delete
 const deleteCampground = async (id) => {
     try {
         let response = await fetch(`${defaultBaseUrl}${id}`, {
@@ -56,6 +57,7 @@ const deleteCampground = async (id) => {
     }
 };
 
+// Create 
 const addCampground = async (e) => {
     e.preventDefault();
     let campground = document.getElementById('campground').value;
