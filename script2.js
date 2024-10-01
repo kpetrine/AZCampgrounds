@@ -2,7 +2,7 @@ const PORT = 3000;
 const defaultBaseUrl = `http://localhost:${PORT}/campgrounds/`;
 
 let submit = document.getElementById('submit');
-submit.addEventListener('click', addCampground);
+submit.addEventListener('click', (e) => addCampground(e));
 
 const getAllCampgrounds = async (baseURL) => {
     try {
