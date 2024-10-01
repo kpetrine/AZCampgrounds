@@ -22,7 +22,7 @@ async function runGemini() {
 
 runGemini();
 
-const defaultBaseUrl = 'http://localhost:3000/';
+const defaultBaseUrl = 'http://localhost:3000/campgrounds';
 
 class CampgroundService {
     constructor(baseURL) {

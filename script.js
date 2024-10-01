@@ -22,7 +22,7 @@ async function runGemini() {
 
 runGemini();
 
-const defaultBaseUrl = 'http://localhost:3000/';
+const defaultBaseUrl = 'http://localhost:3000/campgrounds';
 
 class CampgroundService {
     constructor(baseURL) {
@@ -124,6 +124,7 @@ const campgrounds = [
 
 function populateDropdown() {
     const dropdown = document.getElementById('campground-dropdown');
+    <select id="campground-dropdown"></select>
 
     // Create a default option
     const defaultOption = document.createElement('option');
