@@ -40,27 +40,22 @@ rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bR
     <div class="container mt-5">
         <div class="text-center">
             <h1>Top 10 Arizona Campground</h1>
-            <select id="campground-dropdown">
-            <option value="edit">Select a campground</option>
-        </select>
+           
             <h1 class="display-5 mb-5"><strong>Campground List</strong></h1>
         </div>
         <div class="main row justify-content-center">
             <form id="campsite-form" class="row justify-content-center mb-4" autocomplete="off">
                 <div class="col-10 mb-3">
-                    <label for="campsiteName">Campground Name</label>
-                    <input class="form-control" id="campsiteName" type="text" placeholder="Enter Campground Name">
+                    <label for="campground">Campground Name</label>
+                    <input class="form-control" id="campground" type="text" placeholder="Enter Campground Name">
                 </div>
                 <div class="col-10 mb-3">
-                    <label for="campsiteLocation">Campground Location</label>
-                    <input class="form-control" id="campsiteLocation" type="text" placeholder="Enter Campground Location">
+                    <label for="location">Campground Location</label>
+                    <input class="form-control" id="location" type="text" placeholder="Enter Campground Location">
                 </div>
-                <div class="col-10 mb-3">
-                    <label for="campsiteNumber">Campsite</label>
-                    <input class="form-control" id="campsiteNumber" type="text" placeholder="Enter Campsite Number">
-                </div>
+                
                 <div class="col-10">
-                    <input class="btn btn-success add-btn" type="button" value="Submit" onclick="submitCampsite()">
+                    <input class="btn btn-success add-btn" type="button" value="Submit" id="submit">
                 </div>
             </form>
             <div class="col-10 mt-5">
@@ -69,26 +64,17 @@ rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bR
                         <tr>
                             <th>Campground Name</th>
                             <th>Campground Location</th>
-                            <th>Campsite Number</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="campground-list">
+                    <tbody class="campground-list" id="tbody">
                         <!-- Rows will be populated here -->
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <a href="" class="btn btn-warning btn-sm edit">Edit</a>
-                                <a href="" class="btn btn-danger btn-sm delete">Delete</a>
-                            </td>
-                        </tr>
+                       
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="script2.js"></script>
 </body>
 </html>

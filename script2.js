@@ -1,106 +1,85 @@
-require('dotenv').config();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const PORT = 3000;
+const defaultBaseUrl = `http://localhost:${PORT}/campgrounds/`;
 
-// Initialize the API client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+let submit = document.getElementById('submit');
+submit.addEventListener('click', addCampground);
 
-async function runGemini() {
-  // For text-only input, use the gemini-pro model
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-  const prompt = "What are the top 10 campsites that take reservations in Arizona?";
-
-  try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Gemini says:", text);
-  } catch (error) {
-    console.error("Error calling Gemini API:", error);
-  }
-}
-
-runGemini();
-
-const defaultBaseUrl = 'http://localhost:3000/campgrounds';
-
-class CampgroundService {
-    constructor(baseURL) {
-        this.baseURL = baseURL || defaultBaseUrl;
+const getAllCampgrounds = async (baseURL) => {
+    try {
+        let response = await fetch(`${baseURL}`);
+        let data = await response.json();
+        showCampgrounds(data);
+    } catch (error) {
+        console.error('Error fetching campgrounds:', error);
     }
+};
 
-    async getAllCampgrounds() {
-        const url = `${this.baseURL}campgrounds`;
-        const response = await fetch(url);
-        return response.json();
-    }
-}
+function showCampgrounds(data) {
+    let tbody = document.getElementById('tbody');
+    tbody.innerHTML = ''; // Clear existing rows
 
-class CampgroundSelect {
-    constructor(el) {
-        this.el = el;
-        this.el.addEventListener('change', (e) => this.onChange(e));
-    }
+    for (let item of data) {
+        let tr = document.createElement('tr');
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let td3 = document.createElement('td');
 
-    onChange(e) {
-        console.log('Campground changed:', e.target.value);
+        td1.textContent = item.campground;
+        td2.textContent = item.location;
+
+        // Create delete button
+        let deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('btn', 'btn-danger');
+        deleteButton.onclick = () => deleteCampground(item.id);
+
+        td3.appendChild(deleteButton);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tbody.appendChild(tr);
     }
 }
 
-const service = new CampgroundService();
+const deleteCampground = async (id) => {
+    try {
+        let response = await fetch(`${defaultBaseUrl}${id}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            getAllCampgrounds(defaultBaseUrl);
+        } else {
+            console.error('Failed to delete campground:', response.status);
+        }
+    } catch (error) {
+        console.error('Error deleting campground:', error);
+    }
+};
 
-async function initialize() {
-    const campgrounds = await service.getAllCampgrounds();
-    populateDropdown(campgrounds);
-}
+const addCampground = async (e) => {
+    e.preventDefault();
+    let campground = document.getElementById('campground').value;
+    let location = document.getElementById('location').value;
+    let newCampground = { campground, location };
 
-function populateDropdown(campgrounds) {
-    const dropdown = document.getElementById('campground-dropdown');
+    try {
+        let response = await fetch(defaultBaseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newCampground)
+        });
+        let data = await response.json();
+        console.log('New campground added:', data);
+        
+        document.getElementById('campground').value = '';
+        document.getElementById('location').value = '';
+        getAllCampgrounds(defaultBaseUrl);
+    } catch (error) {
+        console.error('Error adding campground:', error);
+    }
+};
 
-    // Clear existing options
-    dropdown.innerHTML = '';
-
-    // Create a default option
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = 'Select a campground';
-    defaultOption.value = '';
-    dropdown.appendChild(defaultOption);
-
-    // Loop through the campgrounds and create an option for each
-    campgrounds.forEach(campground => {
-        const option = document.createElement('option');
-        option.textContent = campground.campground; // Display name
-        option.value = campground.id; // Use ID as the value
-        dropdown.appendChild(option);
-    });
-}
-
-// Call the function to initialize the dropdown on page load
-window.addEventListener('DOMContentLoaded', initialize);
-
-// Submit campsite function
-function submitCampsite() {
-    const name = document.getElementById('campsiteName').value;
-    const location = document.getElementById('campsiteLocation').value;
-    const number = document.getElementById('campsiteNumber').value;
-
-    // Add new row to the table
-    const tableBody = document.querySelector('.campground-list');
-    const newRow = document.createElement('tr');
-
-    newRow.innerHTML = `
-        <td>${name}</td>
-        <td>${location}</td>
-        <td>${number}</td>
-        <td>
-            <a href="#" class="btn btn-warning btn-sm edit">Edit</a>
-            <a href="#" class="btn btn-danger btn-sm delete">Delete</a>
-        </td>
-    `;
-    tableBody.appendChild(newRow);
-
-    // Clear the input fields
-    document.getElementById('campsiteName').value = '';
-    document.getElementById('campsiteLocation').value = '';
-    document.getElementById('campsiteNumber').value = '';
-}
+// Initial call to get all campgrounds
+getAllCampgrounds(defaultBaseUrl);

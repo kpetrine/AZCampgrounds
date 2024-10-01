@@ -1,26 +1,26 @@
-require('dotenv').config();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+// require('dotenv').config();
+// const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Initialize the API client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// // Initialize the API client
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function runGemini() {
-  // For text-only input, use the gemini-pro model
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// async function runGemini() {
+//   // For text-only input, use the gemini-pro model
+//   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-  const prompt = "What are the top 10 campsites that take reservations in Arizona?";
+//   const prompt = "What are the top 10 campsites that take reservations in Arizona?";
 
-  try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Gemini says:", text);
-  } catch (error) {
-    console.error("Error calling Gemini API:", error);
-  }
-}
+//   try {
+//     const result = await model.generateContent(prompt);
+//     const response = await result.response;
+//     const text = response.text();
+//     console.log("Gemini says:", text);
+//   } catch (error) {
+//     console.error("Error calling Gemini API:", error);
+//   }
+// }
 
-runGemini();
+// runGemini();
 
 const defaultBaseUrl = 'http://localhost:3000/campgrounds';
 
@@ -35,6 +35,36 @@ class CampgroundService {
         return response.json(); // Return the JSON data
     }
 }
+window.addEventListener('DOMContentLoaded', async (e) => {
+    try {
+        const campgrounds = await service.getAllCampgrounds(); // Fetch campgrounds
+        displayCampgrounds(campgrounds); // Call the function to display the campgrounds
+    } catch (error) {
+        console.error('Error fetching campgrounds:', error);
+    }
+});
+function displayCampgrounds(campgrounds) {
+    const container = document.querySelector('.campground-list'); // Select the container where you want to display them
+
+    // Clear existing content
+    container.innerHTML = '';
+
+    // Create HTML elements for each campground
+    campgrounds.forEach(campground => {
+        const row = document.createElement('tr'); // Create a new row for each campground
+        row.innerHTML = `
+            <td>${campground.name}</td>
+            <td>${campground.location}</td>
+            <td>${campground.campsiteNumber}</td>
+            <td>
+                <button class="btn btn-warning btn-sm edit" data-id="${campground.id}">Edit</button>
+                <button class="btn btn-danger btn-sm delete" data-id="${campground.id}">Delete</button>
+            </td>
+        `;
+        container.appendChild(row); // Append the row to the container
+    });
+}
+
 class CampgroundSelect {
     constructor(el) {
         this.el =el;
