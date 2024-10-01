@@ -122,52 +122,43 @@ const campgrounds = [
     { id: 10, campground: "Petrified Forest National Park Campground" }
 ];
 
+
+// Populate the dropdown
 function populateDropdown() {
     const dropdown = document.getElementById('campground-dropdown');
-    <select id="campground-dropdown"></select>
-
-    // Create a default option
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = 'Select a campground';
-    defaultOption.value = '';
-    dropdown.appendChild(defaultOption);
-
-    // Loop through the campgrounds and create an option for each
     campgrounds.forEach(campground => {
         const option = document.createElement('option');
-        option.textContent = campground.campground; // Display name
         option.value = campground.id; // Use ID as the value
+        option.textContent = campground.name; // Display name
         dropdown.appendChild(option);
     });
 }
 
-// Call the function to populate the dropdown
-populateDropdown();
+// Function to handle dropdown change
+function handleDropdownChange() {
+    const dropdown = document.getElementById('campground-dropdown');
+    const selectedId = dropdown.value;
 
-function submitCampsite() {
-    const name = document.getElementById('campsiteName').value;
-    const location = document.getElementById('campsiteLocation').value;
-    const number = document.getElementById('campsiteNumber').value;
+    // Find the selected campground
+    const selectedCampground = campgrounds.find(campground => campground.id == selectedId);
 
-    // Add new row to the table
-    const tableBody = document.querySelector('.campground-list');
-    const newRow = document.createElement('tr');
-
-    newRow.innerHTML = `
-        <td>${name}</td>
-        <td>${location}</td>
-        <td>${number}</td>
-        <td>
-            <a href="#" class="btn btn-warning btn-sm edit">Edit</a>
-            <a href="#" class="btn btn-danger btn-sm delete">Delete</a>
-        </td>
-    `;
-    tableBody.appendChild(newRow);
-
-    // Clear the input fields
-    document.getElementById('campsiteName').value = '';
-    document.getElementById('campsiteLocation').value = '';
-    document.getElementById('campsiteNumber').value = '';
+    if (selectedCampground) {
+        // Populate the form with the selected campground's details
+        document.getElementById('campsiteName').value = selectedCampground.name;
+        document.getElementById('campsiteLocation').value = selectedCampground.location;
+        document.getElementById('campsiteNumber').value = selectedCampground.campsiteNumber;
+    } else {
+        // Clear the form if no campground is selected
+        document.getElementById('campsiteName').value = '';
+        document.getElementById('campsiteLocation').value = '';
+        document.getElementById('campsiteNumber').value = '';
+    }
 }
+
+// Add event listener to the dropdown
+document.getElementById('campground-dropdown').addEventListener('change', handleDropdownChange);
+
+// Call to populate the dropdown when the page loads
+window.onload = populateDropdown;
 
 
